@@ -1,0 +1,11 @@
+services:
+  workflow-test-dev:
+    container_name: workflow-test-dev
+    image: localhost:5000/workflow-test-devcontainer:latest
+    command: /bin/sh -c "sleep infinity"
+    network_mode: "host"
+    volumes:
+      - ../:/src
+      - ../tests/workflow-test/logs:/logs
+    env_file:
+      - .env

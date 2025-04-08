@@ -1,0 +1,29 @@
+services:
+  actions-publish-npm-dev:
+    container_name: actions-publish-npm-dev
+    build:
+      dockerfile: Dockerfile
+    command: /bin/sh -c "sleep infinity"
+    volumes:
+      - ../:/src
+      - ${HOME:-$USERPROFILE}/.ssh:/root/.ssh:ro
+    env_file:
+      - .env
+    networks:
+      - actions-publish-npm-dev-network
+  actions-publish-npm-registry:
+    container_name: actions-publish-npm-registry
+    image: verdaccio/verdaccio:6.1.2
+    ports:
+      - "4873:4873"  # Expose Verdaccio on port 4873
+    volumes:
+      - ../tests:/verdaccio/storage
+      - ../tests/auth/config.yaml:/verdaccio/conf/config.yaml
+      - ../tests/auth/htpasswd:/verdaccio/conf/htpasswd
+    environment:
+      - VERDACCIO_ADMIN_USER=testuser
+      - VERDACCIO_ADMIN_PASSWORD=testpassword
+    networks:
+      - actions-publish-npm-dev-network
+networks:
+  actions-publish-npm-dev-network:

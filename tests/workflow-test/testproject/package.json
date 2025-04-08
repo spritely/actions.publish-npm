@@ -1,0 +1,20 @@
+{
+  "name": "testproject",
+  "version": "1.0.0",
+  "description": "Tests the ability to build and push an npm package.",
+  "keywords": [
+    "test",
+    "npm",
+    "package",
+    "demo"
+  ],
+  "license": "ISC",
+  "author": "mmacdougall@roomstogo.com",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install"
+},
+"dependencies": {}
+}
+
