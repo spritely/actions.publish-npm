@@ -38,8 +38,7 @@ runs:
         registryUsername: testuser
         registryPassword: testpassword
         projectDirectory: tests/workflow-test/testproject
-        version: 1.0.0
-        nugetAuthToken: fake-token
+        version: 1.0.0-${{ github.run_id }}-${{ github.run_attempt }}
         packageRegistry: http://actions-publish-npm-registry:4873 # Local Verdaccio registry for npm packages
 
     - name: Assert custom devcontainer was used
@@ -71,17 +70,25 @@ runs:
         set_test_name "Assert npm package was published"
 
         # Query the npm server API to check if the package exists
-        response=$(curl -s "http://actions-publish-npm-registry:4873/testproject/1.0.0.json" -o /dev/null -w "%{http_code}")
+        response=$(curl -s "http://actions-publish-npm-registry:4873/testproject/1.0.0-${{ github.run_id }}-${{ github.run_attempt }}.json" -o /dev/null -w "%{http_code}")
 
         if [ "$response" -eq 200 ]; then
-            success "NuGet package was published successfully"
+            success "Npm package was published successfully"
         else
-            failure "NuGet package was not found on the server (HTTP $response)"
+            failure "Npm package was not found on the server (HTTP $response)"
             
             # Try to get package list for debugging
-            echo "Search results for 'TestProject':"
-            curl -s "http://localhost:5001/v3/search?q=TestProject"
+            echo "Search results on Verdaccio:"
+            curl -s "http://actions-publish-npm-registry:4873/-/verdaccio/packages" | grep '"name":"testproject"'
         fi
+
+    - name: Collect publish logs
+      if: always()
+      shell: bash
+      run: |
+        echo "Collecting npm publish logs..."
+        find "${{ github.workspace }}" -name "*.log" >> ${{ github.workspace }}/tests/workflow-test/logs/publish.log 2>/dev/null || true
+
 
     - name: Clean up test environment
       shell: bash

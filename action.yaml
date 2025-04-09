@@ -2,9 +2,10 @@ name: Build and publish npm package through the repos devcontainer
 description: Builds and publishes a npm package to the package registry.
 
 inputs:
-  nugetAuthToken:
-    description: The NuGet authentication token to use when pushing the package.
-    required: true
+  npmAuthToken:
+    description: Authentication token for the npm registry.
+    required: false
+    default: ''
   projectDirectory:
     description: The path to the directory containing the package.json file to build from. Include the relative path from the root of the repository if necessary.
     required: true
@@ -70,17 +71,17 @@ runs:
         echo "publishNPMDirectory=$temp_dir" >> $GITHUB_OUTPUT
 
     - name: Publish NPM package
-      if: github.ref_type == 'branch'
+      if: github.ref_type == 'branch' || github.ref_type == 'tag'
       uses: devcontainers/ci@v0.3
       with:
         runCmd: |
-          source "/src/${{ steps.prepare.outputs.publishNPMGetDirectory }}/publish-npm.sh"
+          source "/src/${{ steps.prepare.outputs.publishNPMDirectory }}/publish-npm.sh"
         push: never
         env: |
           PROJECT_DIRECTORY=${{ inputs.projectDirectory }}
           VERSION=${{ inputs.version }}
           PACKAGE_REGISTRY=${{ inputs.packageRegistry }}
-#          NUGET_TOKEN=${{ inputs.nugetAuthToken }}
+          NODE_AUTH_TOKEN=${{ inputs.npmAuthToken }}
 
     - name: Remove temporary files
       if: always()
