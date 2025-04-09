@@ -4,6 +4,10 @@ setup() {
     export TEMP_DIR="$(mktemp -d)"
     export SCRIPT_PATH="${BATS_TEST_DIRNAME}/../publish-npm.sh"
     export PACKAGE_REGISTRY="http://actions-publish-npm-registry:4873"
+    
+    echo "TEMP_DIR: $TEMP_DIR"
+    ls -ld "$TEMP_DIR" || echo "TEMP_DIR doesn't exist!"
+    cd "$TEMP_DIR"
 
     # Auth for Verdaccio
     encoded_pass=$(echo -n 'testpassword' | base64)
@@ -55,9 +59,16 @@ EOF
     run_script() {
         export PROJECT_DIRECTORY="$1"
         export VERSION="${2:-1.0.0}"
+        local allow_failure="${3:-false}"
+
+        cd "$TEMP_DIR" || {
+            echo "FAILED TO cd INTO TEMP_DIR: $TEMP_DIR"
+            return 1
+        }
 
         run bash "${SCRIPT_PATH}"
-        if [ "$status" -ne 0 ]; then
+
+        if [ "$status" -ne 0 ] && [ "$allow_failure" != "true" ]; then
             echo "Script failed with status $status"
             echo "$output"
             return 1
@@ -66,36 +77,42 @@ EOF
 
     assert_package_created() {
         local project_directory="$1"
-        local version="${2:-1.0.0}"
+        local published_version="$2"
+        local package_version="${3:-$2}"  # Optional: if different than published
 
-        grep -q "\"version\": \"${version}\"" "${project_directory}/package.json" || {
-            echo "Expected version ${version} not found in package.json"
+        local package_json="${project_directory}/package.json"
+        [ -f "$package_json" ] || {
+            echo "package.json not found in $project_directory"
+            return 1
+        }
+
+        # Check the version in package.json matches expected version
+        grep -q "\"version\": \"${package_version}\"" "$package_json" || {
+            echo "Expected version ${package_version} not found in package.json"
             return 1
         }
 
         local name
-        name=$(jq -r .name "${project_directory}/package.json")
+        name=$(jq -r .name "$package_json")
         if [ -z "$name" ] || [ "$name" = "null" ]; then
             echo "Failed to read package name from package.json"
             return 1
         fi
 
-        npm view "$name" version --registry "$PACKAGE_REGISTRY" | grep -q "$version" || {
-            echo "Version ${version} of ${name} not found in registry"
+        npm view "$name" version --registry "$PACKAGE_REGISTRY" | grep -q "$published_version" || {
+            echo "Version ${published_version} of ${name} not found in registry"
             return 1
         }
     }
 }
 
 teardown() {
-    # Clear Verdaccio storage (container must allow write access)
-    docker exec actions-publish-npm-registry rm -rf /verdaccio/storage/*
     rm -rf "${TEMP_DIR}"
+    find /src/tests/verdaccio-storage -type f -name '*.tgz' -exec dirname {} \; | xargs rm -rf
 }
 
 @test "publish-npm fails when project package.json file doesn't exist" {
-    cd "${TEMP_DIR}"
-    run_script "NonExistentFolder" "1.0.0"
+     run_script "NonExistentFolder" "1.0.0" "true"
     [ "$status" -ne 0 ]
     [[ "$output" == *"not found"* ]]
 }
@@ -127,10 +144,12 @@ teardown() {
     local project_directory
     project_directory=$(create_project) || return 1
 
-    local version="1.0.0-beta.1+build.123"
-    run_script "$project_directory" "$version"
+    local full_version="1.0.0-beta.1+build.123"
+    local normalized_version="1.0.0-beta.1"
+
+    run_script "$project_directory" "$full_version"
     # npm strips build metadata (+build.123) from version during publish
-    assert_package_created "$project_directory" "1.0.0-beta.1"
+    assert_package_created "$project_directory" "$normalized_version" "$full_version"
 }
 
 @test "publish-npm handles project file in subdirectory" {

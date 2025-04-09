@@ -17,7 +17,7 @@ services:
     ports:
       - "4873:4873"  # Expose Verdaccio on port 4873
     volumes:
-      - ../tests:/verdaccio/storage
+      - ../tests/verdaccio-storage:/verdaccio/storage
       - ../tests/auth/config.yaml:/verdaccio/conf/config.yaml
       - ../tests/auth/htpasswd:/verdaccio/conf/htpasswd
     environment:
