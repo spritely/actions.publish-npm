@@ -119,7 +119,7 @@ teardown() {
 
 @test "publish-npm adds Version tag if none exists" {
     local project_directory
-    project_directory=$(create_project) || return 1
+    project_directory=$(create_project)
 
     local version="1.2.3"
     run_script "$project_directory" "$version"
@@ -128,7 +128,7 @@ teardown() {
 
 @test "publish-npm updates existing Version tag" {
     local project_directory
-    project_directory=$(create_project) || return 1
+    project_directory=$(create_project)
 
     local version="3.0.0"
     sed -i "s#\"version\": \"1.0.0\"#\"version\": \"$version\"#" "$project_directory/package.json" || {
@@ -142,7 +142,7 @@ teardown() {
 
 @test "publish-npm handles complex semantic versions" {
     local project_directory
-    project_directory=$(create_project) || return 1
+    project_directory=$(create_project)
 
     local full_version="1.0.0-beta.1+build.123"
     local normalized_version="1.0.0-beta.1"
@@ -154,7 +154,7 @@ teardown() {
 
 @test "publish-npm handles project file in subdirectory" {
     local project_directory
-    project_directory=$(create_project "SubdirLib" "${TEMP_DIR}/nested") || return 1
+    project_directory=$(create_project "subdirlib" "${TEMP_DIR}/nested")
 
     local version="1.5.0"
     run_script "$project_directory" "$version"
@@ -163,7 +163,7 @@ teardown() {
 
 @test "publish-npm handles absolute path to project file" {
     local project_directory
-    project_directory=$(create_project "AbsoluteLib" "${TEMP_DIR}/absolute") || return 1
+    project_directory=$(create_project "absolutelib" "${TEMP_DIR}/absolute")
 
     local version="2.0.0"
     mkdir -p "$TEMP_DIR/other"

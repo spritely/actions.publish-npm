@@ -71,7 +71,7 @@ runs:
         echo "publishNPMDirectory=$temp_dir" >> $GITHUB_OUTPUT
 
     - name: Publish NPM package
-      if: github.ref_type == 'branch' || github.ref_type == 'tag'
+      if: github.ref_type == 'branch'
       uses: devcontainers/ci@v0.3
       with:
         runCmd: |

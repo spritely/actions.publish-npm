@@ -9,7 +9,6 @@
     "demo"
   ],
   "license": "ISC",
-  "author": "mmacdougall@roomstogo.com",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {

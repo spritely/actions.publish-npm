@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Exit immediately if any command including those in a piped sequence exits with a non-zero status
-set -e
+set -euo pipefail
 
 # Check if package.json exists
 if [ ! -f "${PROJECT_DIRECTORY}/package.json" ]; then

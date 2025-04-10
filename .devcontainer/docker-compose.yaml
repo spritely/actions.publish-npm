@@ -15,7 +15,7 @@ services:
     container_name: actions-publish-npm-registry
     image: verdaccio/verdaccio:6.1.2
     ports:
-      - "4873:4873"  # Expose Verdaccio on port 4873
+      - "4873:4873"
     volumes:
       - ../tests/verdaccio-storage:/verdaccio/storage
       - ../tests/auth/config.yaml:/verdaccio/conf/config.yaml
