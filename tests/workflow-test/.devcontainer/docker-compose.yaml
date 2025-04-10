@@ -9,3 +9,21 @@ services:
       - ../tests/workflow-test/logs:/logs
     env_file:
       - .env
+    networks:
+      - workflow-test--network
+  workflow-test-registry:
+    container_name: npm-registry
+    image: verdaccio/verdaccio:6.1.2
+    ports:
+      - "4873:4873"
+    volumes:
+      - ../tests/verdaccio-storage:/verdaccio/storage
+      - ../tests/auth/config.yaml:/verdaccio/conf/config.yaml
+      - ../tests/auth/htpasswd:/verdaccio/conf/htpasswd
+    environment:
+      - VERDACCIO_ADMIN_USER=testuser
+      - VERDACCIO_ADMIN_PASSWORD=testpassword
+    networks:
+      - workflow-test-network
+networks:
+  workflow-test-network:

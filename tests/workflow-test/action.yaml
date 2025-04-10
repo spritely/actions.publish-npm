@@ -39,7 +39,7 @@ runs:
         registryPassword: testpassword
         projectDirectory: tests/workflow-test/testproject
         version: 1.0.0-${{ github.run_id }}-${{ github.run_attempt }}
-        packageRegistry: http://actions-publish-npm-registry:4873 # Local Verdaccio registry for npm packages
+        packageRegistry: http://workflow-test-registry:4873 # Local Verdaccio registry for npm packages
 
     - name: Assert custom devcontainer was used
       shell: bash
@@ -70,7 +70,7 @@ runs:
         set_test_name "Assert npm package was published"
 
         # Query the npm server API to check if the package exists
-        response=$(curl -s "http://actions-publish-npm-registry:4873/testproject/1.0.0-${{ github.run_id }}-${{ github.run_attempt }}.json" -o /dev/null -w "%{http_code}")
+        response=$(curl -s "http://workflow-test-registry:4873/testproject/1.0.0-${{ github.run_id }}-${{ github.run_attempt }}.json" -o /dev/null -w "%{http_code}")
 
         if [ "$response" -eq 200 ]; then
             success "Npm package was published successfully"
@@ -79,7 +79,7 @@ runs:
             
             # Try to get package list for debugging
             echo "Search results on Verdaccio:"
-            curl -s "http://actions-publish-npm-registry:4873/-/verdaccio/packages" | grep '"name":"testproject"'
+            curl -s "http://workflow-test-registry:4873/-/verdaccio/packages" | grep '"name":"testproject"'
         fi
 
     - name: Collect publish logs
