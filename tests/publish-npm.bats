@@ -5,8 +5,6 @@ setup() {
     export SCRIPT_PATH="${BATS_TEST_DIRNAME}/../publish-npm.sh"
     export PACKAGE_REGISTRY="http://actions-publish-npm-registry:4873"
     
-    echo "TEMP_DIR: $TEMP_DIR"
-    ls -ld "$TEMP_DIR" || echo "TEMP_DIR doesn't exist!"
     cd "$TEMP_DIR"
 
     # Auth for Verdaccio
@@ -24,21 +22,13 @@ EOF
         local project_directory="${1:-testproject}"
         local root_path="${2:-${TEMP_DIR}}"
 
-        if [ -z "$root_path" ]; then
-            echo "TEMP_DIR is not set and no root path provided" >&2
-            return 1
-        fi
-
         local full_path="${root_path}/${project_directory}"
         mkdir -p "$full_path" || {
             echo "Failed to create project directory: $full_path" >&2
             return 1
         }
 
-        cd "$full_path" || {
-            echo "Failed to cd into project directory: $full_path" >&2
-            return 1
-        }
+        cd "$full_path"
 
         npm set registry "$PACKAGE_REGISTRY" > /dev/null 2>&1
 
@@ -112,7 +102,7 @@ teardown() {
 }
 
 @test "publish-npm fails when project package.json file doesn't exist" {
-     run_script "NonExistentFolder" "1.0.0" "true"
+    run_script "NonExistentFolder" "1.0.0" "true"
     [ "$status" -ne 0 ]
     [[ "$output" == *"not found"* ]]
 }
@@ -144,11 +134,11 @@ teardown() {
     local project_directory
     project_directory=$(create_project)
 
+    # npm strips build metadata (+build.123) from version during publish
     local full_version="1.0.0-beta.1+build.123"
     local normalized_version="1.0.0-beta.1"
 
     run_script "$project_directory" "$full_version"
-    # npm strips build metadata (+build.123) from version during publish
     assert_package_created "$project_directory" "$normalized_version" "$full_version"
 }
 
@@ -168,6 +158,20 @@ teardown() {
     local version="2.0.0"
     mkdir -p "$TEMP_DIR/other"
     cd "$TEMP_DIR/other"
+
+    run_script "$project_directory" "$version"
+    assert_package_created "$project_directory" "$version"
+}
+
+@test "publish-npm handles scoped package names" {
+    local project_directory
+    project_directory=$(create_project "scopedpkg")
+
+    local version="4.2.0"
+
+    # Update the package name to use a scope
+    jq '.name = "@myscope/scopedpkg"' "$project_directory/package.json" > "$project_directory/tmp.json"
+    mv "$project_directory/tmp.json" "$project_directory/package.json"
 
     run_script "$project_directory" "$version"
     assert_package_created "$project_directory" "$version"
