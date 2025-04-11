@@ -1,4 +1,5 @@
 name: Publish npm workflow uses devcontainer and publishes packages
+
 description: Test to validate that publish npm workflow uses devcontainer and publishes packages
 
 runs:
@@ -19,27 +20,24 @@ runs:
         if [ -d "${{ github.workspace }}/.devcontainer" ]; then
           mv "${{ github.workspace }}/.devcontainer" "${{ github.workspace }}/.devcontainer.bak"
         fi
-        
+
         # Copy our test .devcontainer to the root
         cp -r "${{ github.workspace }}/tests/workflow-test/.devcontainer" "${{ github.workspace }}/"
 
-        # Create and push test container image
-        docker build -t localhost:5000/workflow-test-devcontainer:latest \
+        # Build the test container image
+        docker build -t workflow-test-devcontainer:latest \
             -f ${{ github.workspace }}/tests/workflow-test/devcontainer-to-publish/Dockerfile \
             ${{ github.workspace }}/tests/workflow-test/devcontainer-to-publish/
 
-        docker login localhost:5000 -u testuser -p testpassword
-        docker push localhost:5000/workflow-test-devcontainer:latest
-
     - name: Run publish-npm action
-      uses: ./ #Runs from the root folder of the registry, which is where the action.yaml file is located.
+      uses: ./
       with:
-        registryHost: localhost:5000 
+        registryHost: workflow-test-registry:4873
         registryUsername: testuser
         registryPassword: testpassword
         projectDirectory: tests/workflow-test/testproject
         version: 1.0.0-${{ github.run_id }}-${{ github.run_attempt }}
-        packageRegistry: http://workflow-test-registry:4873 # Local Verdaccio registry for npm packages
+        packageRegistry: http://workflow-test-registry:4873
 
     - name: Assert custom devcontainer was used
       shell: bash
@@ -49,7 +47,7 @@ runs:
         set_test_name "Assert custom devcontainer was used"
 
         log_file="${{ github.workspace }}/tests/workflow-test/logs/devcontainer.log"
-        
+
         if [ -f "$log_file" ]; then
             if grep -q "CUSTOM_DEVCONTAINER: workflow-test-container" "$log_file"; then
                 success "Custom devcontainer was used"
@@ -76,8 +74,6 @@ runs:
             success "Npm package was published successfully"
         else
             failure "Npm package was not found on the server (HTTP $response)"
-            
-            # Try to get package list for debugging
             echo "Search results on Verdaccio:"
             curl -s "http://workflow-test-registry:4873/-/verdaccio/packages" | grep '"name":"testproject"'
         fi

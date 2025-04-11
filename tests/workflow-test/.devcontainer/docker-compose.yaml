@@ -1,7 +1,7 @@
 services:
   workflow-test-dev:
     container_name: workflow-test-dev
-    image: localhost:5000/workflow-test-devcontainer:latest
+    image: workflow-test-devcontainer:latest
     command: /bin/sh -c "sleep infinity"
     network_mode: "host"
     volumes:
@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     networks:
-      - workflow-test--network
+      - workflow-test-network
   workflow-test-registry:
     container_name: npm-registry
     image: verdaccio/verdaccio:6.1.2
