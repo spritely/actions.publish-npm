@@ -29,15 +29,18 @@ runs:
             -f ${{ github.workspace }}/tests/workflow-test/devcontainer-to-publish/Dockerfile \
             ${{ github.workspace }}/tests/workflow-test/devcontainer-to-publish/
 
+        docker login localhost:5000 -u testuser -p testpassword
+        docker push localhost:5000/workflow-test-devcontainer:latest
+
     - name: Run publish-npm action
       uses: ./
       with:
-        registryHost: workflow-test-registry:4873
+        registryHost: localhost:5000
         registryUsername: testuser
         registryPassword: testpassword
         projectDirectory: tests/workflow-test/testproject
         version: 1.0.0-${{ github.run_id }}-${{ github.run_attempt }}
-        packageRegistry: http://workflow-test-registry:4873
+        packageRegistry: http://npm-registry:4873
 
     - name: Assert custom devcontainer was used
       shell: bash
