@@ -16,15 +16,15 @@ cd "$PROJECT_DIRECTORY" || {
 echo "Updating version in ${PROJECT_DIRECTORY} to ${VERSION}"
 
 # Create a temp file inside the project directory
-tmpfile="$(mktemp "${PROJECT_DIRECTORY}/temp.json.XXXXXX")"
+tmpfile="$(mktemp "temp.json.XXXXXX")"
 
 # Update the version in package.json
-if jq -e .version "$PROJECT_DIRECTORY/package.json" > /dev/null; then
+if jq -e .version "package.json" > /dev/null; then
     # If version exists, update it
-    jq ".version = \"$VERSION\"" "$PROJECT_DIRECTORY/package.json" > "$tmpfile" && mv "$tmpfile" "$PROJECT_DIRECTORY/package.json"
+    jq ".version = \"$VERSION\"" "package.json" > "$tmpfile" && mv "$tmpfile" "package.json"
 else
     # If version doesn't exist, add it
-    jq ". + {\"version\": \"$VERSION\"}" "$PROJECT_DIRECTORY/package.json" > "$tmpfile" && mv "$tmpfile" "$PROJECT_DIRECTORY/package.json"
+    jq ". + {\"version\": \"$VERSION\"}" "package.json" > "$tmpfile" && mv "$tmpfile" "package.json"
 fi
 
 # Create the npm package tarball
