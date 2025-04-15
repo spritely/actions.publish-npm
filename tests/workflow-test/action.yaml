@@ -40,7 +40,7 @@ runs:
         registryPassword: testpassword
         projectDirectory: tests/workflow-test/testproject
         version: 1.0.0-${{ github.run_id }}-${{ github.run_attempt }}
-        packageRegistry: http://npm-registry:4873
+        packageRegistry: http://actions-publish-npm-registry:4873
 
     - name: Assert custom devcontainer was used
       shell: bash
