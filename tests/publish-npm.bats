@@ -4,19 +4,19 @@ setup() {
     export TEMP_DIR="$(mktemp -d)"
     export SCRIPT_PATH="${BATS_TEST_DIRNAME}/../publish-npm.sh"
     export PACKAGE_REGISTRY="http://actions-publish-npm-registry:4873"
-    
+    export PACKAGE_AUTH_TOKEN=$(echo -n 'testpassword' | base64)
     cd "$TEMP_DIR"
 
     # Auth for Verdaccio
-    encoded_pass=$(echo -n 'testpassword' | base64)
+#    encoded_pass=$(echo -n 'testpassword' | base64)
 
-cat > ~/.npmrc <<EOF
-//actions-publish-npm-registry:4873/:username=testuser
-//actions-publish-npm-registry:4873/:_password=${encoded_pass}
-//actions-publish-npm-registry:4873/:email=testuser@example.com
-always-auth=true
-registry=http://actions-publish-npm-registry:4873
-EOF
+#cat > ~/.npmrc <<EOF
+#//actions-publish-npm-registry:4873/:username=testuser
+#//actions-publish-npm-registry:4873/:_password=${encoded_pass}
+#//actions-publish-npm-registry:4873/:email=testuser@example.com
+#always-auth=true
+#registry=http://actions-publish-npm-registry:4873
+#EOF
 
     create_project() {
         local project_directory="${1:-testproject}"

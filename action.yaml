@@ -2,7 +2,7 @@ name: Build and publish npm package through the repos devcontainer
 description: Builds and publishes a npm package to the package registry.
 
 inputs:
-  npmAuthToken:
+  packageAuthToken:
     description: Authentication token for the npm registry.
     required: false
     default: ''
@@ -73,7 +73,7 @@ runs:
           PROJECT_DIRECTORY=${{ inputs.projectDirectory }}
           VERSION=${{ inputs.version }}
           PACKAGE_REGISTRY=${{ inputs.packageRegistry }}
-          NODE_AUTH_TOKEN=${{ inputs.npmAuthToken }}
+          PACKAGE_AUTH_TOKEN=${{ inputs.packageAuthToken }}
 
     - name: Remove temporary files
       if: always()

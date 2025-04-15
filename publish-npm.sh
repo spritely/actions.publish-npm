@@ -27,6 +27,10 @@ else
     jq ". + {\"version\": \"$VERSION\"}" "package.json" > "$tmpfile" && mv "$tmpfile" "package.json"
 fi
 
+# Authenticate with the local registry'
+npm set registry $PACKAGE_REGISTRY
+npm config set //${PACKAGE_REGISTRY#http://}/:_authToken "$PACKAGE_AUTH_TOKEN"
+
 # Create the npm package tarball
 echo "Creating npm package..."
 echo "[DEBUG] Running npm pack from: $(pwd)"
@@ -34,4 +38,4 @@ npm pack
 
 # Publish to the npm registry (local or public)
 echo "Publishing npm package to registry..."
-npm publish --registry "$PACKAGE_REGISTRY" --access public
+npm publish --registry "$PACKAGE_REGISTRY"
