@@ -86,7 +86,7 @@ runs:
       shell: bash
       run: |
         echo "Collecting npm publish logs..."
-        find "${{ github.workspace }}" -name "*.log" >> ${{ github.workspace }}/tests/workflow-test/logs/publish.log 2 > /dev/null || true
+        find "${{ github.workspace }}" -name "*.log" >> ${{ github.workspace }}/tests/workflow-test/logs/publish.log 2> /dev/null || true
 
     - name: Clean up test environment
       shell: bash
