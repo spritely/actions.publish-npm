@@ -11,7 +11,7 @@ services:
     networks:
       - workflow-test-network
   workflow-test-registry:
-    container_name: actions-publish-npm-registry
+    container_name: workflow-test-registry
     image: verdaccio/verdaccio:6.1.2
     ports:
       - "4873:4873"
