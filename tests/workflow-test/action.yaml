@@ -15,6 +15,7 @@ runs:
       shell: bash
       run: |
         mkdir -p "${{ github.workspace }}/tests/workflow-test/logs"
+        mkdir -p "${{ github.workspace }}/tests/verdaccio-storage"
 
         # Back up existing .devcontainer
         if [ -d "${{ github.workspace }}/.devcontainer" ]; then

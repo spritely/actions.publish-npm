@@ -7,17 +7,6 @@ setup() {
     export PACKAGE_AUTH_TOKEN=$(echo -n 'testpassword' | base64)
     cd "$TEMP_DIR"
 
-    # Auth for Verdaccio
-#    encoded_pass=$(echo -n 'testpassword' | base64)
-
-#cat > ~/.npmrc <<EOF
-#//actions-publish-npm-registry:4873/:username=testuser
-#//actions-publish-npm-registry:4873/:_password=${encoded_pass}
-#//actions-publish-npm-registry:4873/:email=testuser@example.com
-#always-auth=true
-#registry=http://actions-publish-npm-registry:4873
-#EOF
-
     create_project() {
         local project_directory="${1:-testproject}"
         local root_path="${2:-${TEMP_DIR}}"
