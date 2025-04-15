@@ -2,7 +2,9 @@ services:
   workflow-test-dev:
     container_name: workflow-test-dev
     image: workflow-test-devcontainer:latest
-    command: /bin/sh -c "sleep infinity"
+#    command: /bin/sh -c "sleep infinity"
+    command: >
+      /bin/sh -c 'echo "CUSTOM_DEVCONTAINER: workflow-test-container" > /logs/devcontainer.log && sleep 10'
     volumes:
       - ../:/src
       - ../tests/workflow-test/logs:/logs
