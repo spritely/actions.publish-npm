@@ -24,8 +24,8 @@ runs:
         # Copy our test .devcontainer to the root
         cp -r "${{ github.workspace }}/tests/workflow-test/.devcontainer" "${{ github.workspace }}/"
 
-        # Build the test container image
-        docker build -t workflow-test-devcontainer:latest \
+        # Create and push test container image
+        docker build -t localhost:5000/workflow-test-devcontainer:latest \
             -f ${{ github.workspace }}/tests/workflow-test/devcontainer-to-publish/Dockerfile \
             ${{ github.workspace }}/tests/workflow-test/devcontainer-to-publish/
 
