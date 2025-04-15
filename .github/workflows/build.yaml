@@ -35,11 +35,13 @@ jobs:
         uses: devcontainers/ci@v0.3
         if: always()
         with:
-          runCmd: |
-            bats --version
-            bats --print-output-on-failure --report-formatter junit --output ./test-results/ ./tests/
-          push: never
           imageName: localhost:5000/workflow-test-devcontainer
+          runCmd: |
+            echo "CUSTOM_DEVCONTAINER: workflow-test-container" > /logs/devcontainer.log
+            bats --version
+            bats --print-output-on-failure --report-formatter junit --output /src/test-results/ /src/tests/
+          skipContainerUserIdUpdate: true
+          push: never
 
       - name: Add test report title
         if: always()
