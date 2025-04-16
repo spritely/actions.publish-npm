@@ -65,6 +65,14 @@ runs:
         
         # Set output variables
         echo "publishNPMDirectory=$temp_dir" >> $GITHUB_OUTPUT
+        
+    - name: Debug compose paths
+      run: |
+        echo "GitHub workspace: ${{ github.workspace }}"
+        echo "--- files ---"
+        find . -type f
+        echo "--- directories ---"
+        find . -type d
 
     - name: Publish NPM package
       if: github.ref_type == 'branch'
