@@ -2,8 +2,14 @@
 # Exit immediately if any command including those in a piped sequence exits with a non-zero status
 set -euo pipefail
 
-# Make sure the script will be able to authenticate with the local registry
-grep -qxF 'always-auth=true' ~/.npmrc || echo 'always-auth=true' >> ~/.npmrc
+# Ensure ~/.npmrc exists and configure always-auth
+NPMRC="$HOME/.npmrc"
+mkdir -p "$(dirname "$NPMRC")"
+
+AUTH_LINE="always-auth=true"
+if ! grep -qF "$AUTH_LINE" "$NPMRC" 2>/dev/null; then
+  echo "$AUTH_LINE" >> "$NPMRC"
+fi
 
 # Check if package.json exists
 if [ ! -f "${PROJECT_DIRECTORY}/package.json" ]; then
