@@ -14,8 +14,10 @@ runs:
     - name: Prepare test environment
       shell: bash
       run: |
+        # Set up test environment with required directories
         mkdir -p "${{ github.workspace }}/tests/workflow-test/logs"
         mkdir -p "${{ github.workspace }}/tests/verdaccio-storage"
+        rm -rf "${{ github.workspace }}/tests/verdaccio-storage/"*
 
         # Back up existing .devcontainer
         if [ -d "${{ github.workspace }}/.devcontainer" ]; then
