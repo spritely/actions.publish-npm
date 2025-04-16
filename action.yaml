@@ -2,9 +2,13 @@ name: Build and publish npm package through the repos devcontainer
 description: Builds and publishes a npm package to the package registry.
 
 inputs:
-  packageAuthToken:
-    description: Authentication token for the npm registry.
-    required: false
+  packageRegistryUsername:
+    description: Authentication username for the npm registry.
+    required: true
+    default: ''
+  packageRegistryPassword:
+    description: Authentication password for the npm registry.
+    required: true
     default: ''
   projectDirectory:
     description: The path to the directory containing the package.json file to build from. Include the relative path from the root of the repository if necessary.
@@ -25,7 +29,7 @@ inputs:
     required: false
     default: ''
   registryPassword:
-    description: The token to use to authenticate with the container registry for pulling devcontainers. If not provided, no login will be performed.
+    description: The password to use to authenticate with the container registry for pulling devcontainers. If not provided, no login will be performed.
     required: false
     default: ''
 
@@ -73,7 +77,9 @@ runs:
           PROJECT_DIRECTORY=${{ inputs.projectDirectory }}
           VERSION=${{ inputs.version }}
           PACKAGE_REGISTRY=${{ inputs.packageRegistry }}
-          PACKAGE_AUTH_TOKEN=${{ inputs.packageAuthToken }}
+          PACKAGE_REGISTRY: http://actions-publish-npm-registry:4873
+          PACKAGE_REGISTRY_USERNAME: ${{ inputs.packageRegistryUsername }}
+          PACKAGE_REGISTRY_PASSWORD: ${{ inputs.packageRegistryPassword }}
 
     - name: Remove temporary files
       if: always()

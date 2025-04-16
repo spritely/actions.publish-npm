@@ -51,7 +51,8 @@ jobs:
 
       - uses: spritely/actions.publish-npm@v1
         with:
-          authToken: ${{ github.token }}
+          packageRegistryUsername: registryuser
+          packageRegistryPassword: registrypass
           projectDirectory: Projects/MyProject
           version: 2.1.0-rc.1
           # Read devcontainers from here
@@ -64,7 +65,8 @@ jobs:
 
 | Parameter | Description | Required | Default |
 |-----------|-------------|----------|---------|
-| `authToken` | Authentication token | Yes | - |
+| `packageRegistryUsername` | Package registry auth username | Yes | - |
+| `packageRegistryPassword` | Package registry auth password | Yes | - |
 | `projectDirectory` | Path to directory containing your package.json file (relative to root) | Yes | - |
 | `version` | Full SemVer 2.0 version string | Yes | - |
 | `packageRegistry` | NPM Registry URL | No | GitHub Packages URL |
