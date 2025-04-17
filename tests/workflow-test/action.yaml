@@ -39,7 +39,7 @@ runs:
       shell: bash
       run: |
         echo "Checking Verdaccio registry..."
-        until curl -s "http://workflow-test-registry:4873/-/verdaccio/packages" > /dev/null; do
+        until curl -s "http://localhost:4873/-/verdaccio/packages" > /dev/null; do
             echo "Waiting for Verdaccio to be ready..."
             sleep 5
         done
@@ -53,7 +53,7 @@ runs:
         registryPassword: testpassword
         projectDirectory: tests/workflow-test/testproject
         version: 1.0.0-${{ github.run_id }}-${{ github.run_attempt }}
-        packageRegistry: http://workflow-test-registry:4873
+        packageRegistry: http://localhost:4873
         packageRegistryUsername: testuser
         packageRegistryPassword: testpassword
         npmPublishArgs: --loglevel verbose
@@ -88,7 +88,7 @@ runs:
         set_test_name "Assert npm package was published"
 
         # Query the npm server API to check if the package exists
-        response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" "http://workflow-test-registry:4873/testproject/1.0.0-${{ github.run_id }}-${{ github.run_attempt }}.json")
+        response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" "http://localhost:4873/testproject/1.0.0-${{ github.run_id }}-${{ github.run_attempt }}.json")
 
         if [ "$response" -eq 200 ]; then
             success "Npm package was published successfully"
@@ -97,7 +97,7 @@ runs:
             echo "Full response from Verdaccio:"
             cat /tmp/npm_response.json
             echo "Search results on Verdaccio:"
-            curl -s "http://workflow-test-registry:4873/-/verdaccio/packages" | grep '"name":"testproject"'
+            curl -s "http://localhost:4873/-/verdaccio/packages" | grep '"name":"testproject"'
         fi
 
     - name: Capture Verdaccio logs
