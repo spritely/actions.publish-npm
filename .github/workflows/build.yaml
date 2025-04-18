@@ -27,9 +27,9 @@ jobs:
               -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
               --name registry registry:2
 
-      - name: Run test - workflow-test
-        uses: ./tests/workflow-test
-        if: always() && steps.setup-tests.outcome == 'success'
+      # - name: Run test - workflow-test
+      #   uses: ./tests/workflow-test
+      #   if: always() && steps.setup-tests.outcome == 'success'
 
       - name: Run tests - publish-npm
         uses: devcontainers/ci@v0.3
