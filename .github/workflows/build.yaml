@@ -36,11 +36,10 @@ jobs:
         if: always()
         with:
           runCmd: |
-            echo "CUSTOM_DEVCONTAINER: workflow-test-container" > /logs/devcontainer.log
             bats --version
-            bats --print-output-on-failure --report-formatter junit --output /src/test-results/ /src/tests/
+            bats --print-output-on-failure --report-formatter junit --output ./test-results/ ./tests/
           push: never
-
+          
       - name: Add test report title
         if: always()
         run: |
