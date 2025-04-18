@@ -2,15 +2,6 @@
 # Exit immediately if any command including those in a piped sequence exits with a non-zero status
 set -euo pipefail
 
-# Ensure ~/.npmrc exists and configure always-auth
-NPMRC="$HOME/.npmrc"
-mkdir -p "$(dirname "$NPMRC")"
-
-AUTH_LINE="always-auth=true"
-if ! grep -qF "$AUTH_LINE" "$NPMRC" 2>/dev/null; then
-  echo "$AUTH_LINE" >> "$NPMRC"
-fi
-
 # Check if package.json exists
 if [ ! -f "${PROJECT_DIRECTORY}/package.json" ]; then
   echo "Error: Package.json file '${PROJECT_DIRECTORY}/package.json' not found" >&2
@@ -36,15 +27,13 @@ else
     jq ". + {\"version\": \"$VERSION\"}" "package.json" > "$tmpfile" && mv "$tmpfile" "package.json"
 fi
 
-# Authenticate with the local registry
-PACKAGE_REGISTRY_HOST=$(node -p "new URL(process.env.PACKAGE_REGISTRY).host")
 
-npm set registry $PACKAGE_REGISTRY
+# Remove http(s):// prefix from registry name for assigning npm credentials config
+PACKAGE_REGISTRY_HOST=$(echo "$PACKAGE_REGISTRY" | sed -E 's|^https?://||' | sed -E 's|/.*$||')
 
-PACKAGE_AUTH_ENCODED=$(echo -n "testuser:testpassword" | base64)
-
-# Configure .npmrc for basic auth
-npm config set "//$PACKAGE_REGISTRY_HOST/:_auth" "$PACKAGE_AUTH_ENCODED"
+# Configure npm registry and credentials for publishing
+npm set registry "$PACKAGE_REGISTRY"
+npm config set "//$PACKAGE_REGISTRY_HOST/:_auth" "$(echo -n "${PACKAGE_REGISTRY_USERNAME}:${PACKAGE_REGISTRY_PASSWORD}" | base64)"
 
 # Create the npm package tarball
 echo "Creating npm package..."

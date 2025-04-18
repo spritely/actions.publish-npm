@@ -1,3 +1,7 @@
+networks:
+  actions-publish-npm-dev-network:
+    driver: bridge
+
 services:
   actions-publish-npm-dev:
     container_name: actions-publish-npm-dev
@@ -11,19 +15,14 @@ services:
       - .env
     networks:
       - actions-publish-npm-dev-network
+
   actions-publish-npm-registry:
     container_name: actions-publish-npm-registry
     image: verdaccio/verdaccio:6.1.2
     ports:
       - "4873:4873"
     volumes:
-      - ../tests/verdaccio-storage:/verdaccio/storage
-      - ../tests/auth/config.yaml:/verdaccio/conf/config.yaml
-      - ../tests/auth/htpasswd:/verdaccio/conf/htpasswd
-    environment:
-      - VERDACCIO_ADMIN_USER=testuser
-      - VERDACCIO_ADMIN_PASSWORD=testpassword
+      - ../tests/verdaccio/storage:/verdaccio/storage
+    user: root
     networks:
       - actions-publish-npm-dev-network
-networks:
-  actions-publish-npm-dev-network:

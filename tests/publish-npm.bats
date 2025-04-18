@@ -4,7 +4,8 @@ setup() {
     export TEMP_DIR="$(mktemp -d)"
     export SCRIPT_PATH="${BATS_TEST_DIRNAME}/../publish-npm.sh"
     export PACKAGE_REGISTRY="http://actions-publish-npm-registry:4873"
-    export PACKAGE_AUTH_ENCODED=$(echo -n "testuser:testpassword" | base64)
+    export PACKAGE_REGISTRY_USERNAME="testuser"
+    export PACKAGE_REGISTRY_PASSWORD="testpassword"
 
     cd "$TEMP_DIR"
 
@@ -88,7 +89,7 @@ setup() {
 
 teardown() {
     rm -rf "${TEMP_DIR}"
-    find /src/tests/verdaccio-storage -type f -name '*.tgz' -exec dirname {} \; | xargs rm -rf
+    find /src/tests/verdaccio/storage -type f -name '*.tgz' -exec dirname {} \; | xargs rm -rf
 }
 
 @test "publish-npm fails when project package.json file doesn't exist" {
