@@ -11,13 +11,17 @@ runs:
         source ${{ github.workspace }}/tests/test-reporter.sh
         initialize_test "Publish npm workflow uses devcontainer and publishes packages" "workflow-test"
 
+    - name: Prepare test-reporter script for container
+      shell: bash
+      run: |
+        mkdir -p .github-actions-publish-npm
+        cp -f ./tests/test-reporter.sh .github-actions-publish-npm/
+
     - name: Prepare test environment
       shell: bash
       run: |
         # Set up test environment with required directories
         mkdir -p "${{ github.workspace }}/tests/workflow-test/logs"
-        # mkdir -p "${{ github.workspace }}/tests/verdaccio/storage"
-        # rm -rf "${{ github.workspace }}/tests/verdaccio/storage/"*
 
         # Back up existing .devcontainer
         if [ -d "${{ github.workspace }}/.devcontainer" ]; then
@@ -34,13 +38,6 @@ runs:
 
         docker login localhost:5000 -u testuser -p testpassword
         docker push localhost:5000/workflow-test-devcontainer:latest
-    
-    - name: Prepare test-reporter script for container
-      shell: bash
-      run: |
-        mkdir -p "${{ github.workspace }}/.github-actions-publish-npm"
-        cp "${{ github.workspace }}/tests/test-reporter.sh" "${{ github.workspace }}/.github-actions-publish-npm/"
-        chmod +x "${{ github.workspace }}/.github-actions-publish-npm/test-reporter.sh"
 
     - name: Run publish-npm action
       uses: ./
@@ -82,7 +79,7 @@ runs:
       with:
         push: never
         runCmd: |
-          source ${{ github.workspace }}/tests/test-reporter.sh
+          source /src/.github-actions-publish-npm/test-reporter.sh
           set_test_name "Assert npm package was published"
 
           response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" "http://workflow-test-registry:4873/testproject/1.0.0-${{ github.run_id }}-${{ github.run_attempt }}.json")
@@ -96,21 +93,6 @@ runs:
               echo "Search results on Verdaccio:"
               curl -s "http://workflow-test-registry:4873/-/verdaccio/packages" | grep '"name":"testproject"'
           fi
-
-    # - name: Capture Verdaccio logs
-    #   if: always()
-    #   shell: bash
-    #   run: |
-    #     echo "Capturing Verdaccio logs..."
-    #     docker logs actions-publish-npm-registry > ${{ github.workspace }}/tests/workflow-test/logs/verdaccio.log || true
-    #     cat ${{ github.workspace }}/tests/workflow-test/logs/verdaccio.log
-
-    # - name: Collect publish logs
-    #   if: always()
-    #   shell: bash
-    #   run: |
-    #     echo "Collecting npm publish logs..."
-    #     find "${{ github.workspace }}" -name "*.log" >> ${{ github.workspace }}/tests/workflow-test/logs/publish.log 2>/dev/null || true
 
     - name: Clean up test environment
       shell: bash
