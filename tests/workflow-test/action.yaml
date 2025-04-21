@@ -34,6 +34,12 @@ runs:
 
         docker login localhost:5000 -u testuser -p testpassword
         docker push localhost:5000/workflow-test-devcontainer:latest
+    
+    - name: Prepare test-reporter script for container
+      shell: bash
+      run: |
+        mkdir -p "${{ github.workspace }}/.github-actions-publish-npm"
+        cp "${{ github.workspace }}/tests/test-reporter.sh" "${{ github.workspace }}/.github-actions-publish-npm/"
 
     - name: Run publish-npm action
       uses: ./
@@ -52,7 +58,7 @@ runs:
       shell: bash
       if: always()
       run: |
-        source ${{ github.workspace }}/tests/test-reporter.sh
+        source /src/.github-actions-publish-npm/test-reporter.sh
         set_test_name "Assert custom devcontainer was used"
 
         log_file="${{ github.workspace }}/tests/workflow-test/logs/devcontainer.log"
