@@ -35,16 +35,6 @@ runs:
         docker login localhost:5000 -u testuser -p testpassword
         docker push localhost:5000/workflow-test-devcontainer:latest
 
-    - name: Verify Verdaccio registry
-      shell: bash
-      run: |
-        echo "Checking Verdaccio registry..."
-        until curl -s "http://localhost:4873/-/verdaccio/packages" > /dev/null; do
-            echo "Waiting for Verdaccio to be ready..."
-            sleep 5
-        done
-        echo "Verdaccio registry is ready."
-
     - name: Run publish-npm action
       uses: ./
       with:
