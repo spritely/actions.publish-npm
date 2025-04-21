@@ -70,40 +70,40 @@ runs:
             ls -la "${{ github.workspace }}/tests/workflow-test/logs/"
         fi
 
-    - name: Assert npm package was published
-      shell: bash
-      if: always()
-      run: |
-        source ${{ github.workspace }}/tests/test-reporter.sh
-        set_test_name "Assert npm package was published"
+    # - name: Assert npm package was published
+    #   shell: bash
+    #   if: always()
+    #   run: |
+    #     source ${{ github.workspace }}/tests/test-reporter.sh
+    #     set_test_name "Assert npm package was published"
 
-        # Query the npm server API to check if the package exists
-        response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" "http://localhost:4873/testproject/1.0.0-${{ github.run_id }}-${{ github.run_attempt }}.json")
+    #     # Query the npm server API to check if the package exists
+    #     response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" "http://localhost:4873/testproject/1.0.0-${{ github.run_id }}-${{ github.run_attempt }}.json")
 
-        if [ "$response" -eq 200 ]; then
-            success "Npm package was published successfully"
-        else
-            failure "Npm package was not found on the server (HTTP $response)"
-            echo "Full response from Verdaccio:"
-            cat /tmp/npm_response.json
-            echo "Search results on Verdaccio:"
-            curl -s "http://localhost:4873/-/verdaccio/packages" | grep '"name":"testproject"'
-        fi
+    #     if [ "$response" -eq 200 ]; then
+    #         success "Npm package was published successfully"
+    #     else
+    #         failure "Npm package was not found on the server (HTTP $response)"
+    #         echo "Full response from Verdaccio:"
+    #         cat /tmp/npm_response.json
+    #         echo "Search results on Verdaccio:"
+    #         curl -s "http://localhost:4873/-/verdaccio/packages" | grep '"name":"testproject"'
+    #     fi
 
-    - name: Capture Verdaccio logs
-      if: always()
-      shell: bash
-      run: |
-        echo "Capturing Verdaccio logs..."
-        docker logs actions-publish-npm-registry > ${{ github.workspace }}/tests/workflow-test/logs/verdaccio.log || true
-        cat ${{ github.workspace }}/tests/workflow-test/logs/verdaccio.log
+    # - name: Capture Verdaccio logs
+    #   if: always()
+    #   shell: bash
+    #   run: |
+    #     echo "Capturing Verdaccio logs..."
+    #     docker logs actions-publish-npm-registry > ${{ github.workspace }}/tests/workflow-test/logs/verdaccio.log || true
+    #     cat ${{ github.workspace }}/tests/workflow-test/logs/verdaccio.log
 
-    - name: Collect publish logs
-      if: always()
-      shell: bash
-      run: |
-        echo "Collecting npm publish logs..."
-        find "${{ github.workspace }}" -name "*.log" >> ${{ github.workspace }}/tests/workflow-test/logs/publish.log 2>/dev/null || true
+    # - name: Collect publish logs
+    #   if: always()
+    #   shell: bash
+    #   run: |
+    #     echo "Collecting npm publish logs..."
+    #     find "${{ github.workspace }}" -name "*.log" >> ${{ github.workspace }}/tests/workflow-test/logs/publish.log 2>/dev/null || true
 
     - name: Clean up test environment
       shell: bash

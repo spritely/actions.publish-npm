@@ -67,6 +67,7 @@ runs:
         echo "publishNPMDirectory=$temp_dir" >> $GITHUB_OUTPUT
         
     - name: Debug compose paths
+      shell: bash
       run: |
         echo "GitHub workspace: ${{ github.workspace }}"
         echo "--- files ---"
