@@ -86,9 +86,8 @@ runs:
           PROJECT_DIRECTORY=${{ inputs.projectDirectory }}
           VERSION=${{ inputs.version }}
           PACKAGE_REGISTRY=${{ inputs.packageRegistry }}
-          PACKAGE_REGISTRY: http://actions-publish-npm-registry:4873
-          PACKAGE_REGISTRY_USERNAME: ${{ inputs.packageRegistryUsername }}
-          PACKAGE_REGISTRY_PASSWORD: ${{ inputs.packageRegistryPassword }}
+          PACKAGE_REGISTRY_USERNAME=${{ inputs.packageRegistryUsername }}
+          PACKAGE_REGISTRY_PASSWORD=${{ inputs.packageRegistryPassword }}
 
     - name: Remove temporary files
       if: always()
