@@ -40,6 +40,7 @@ runs:
       run: |
         mkdir -p "${{ github.workspace }}/.github-actions-publish-npm"
         cp "${{ github.workspace }}/tests/test-reporter.sh" "${{ github.workspace }}/.github-actions-publish-npm/"
+        chmod +x "${{ github.workspace }}/.github-actions-publish-npm/test-reporter.sh"
 
     - name: Run publish-npm action
       uses: ./
