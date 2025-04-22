@@ -15,7 +15,7 @@ runs:
       shell: bash
       run: |
         mkdir -p "${{ github.workspace }}/.ci-scripts"
-        cp "${{ github.workspace }}/tests/test-reporter.sh" "${{ github.workspace }}/.ci-scripts/"
+        cp "${{ github.workspace }}/tests/test-reporter.sh" ".ci-scripts/test-reporter.sh"
 
     - name: Prepare test environment
       shell: bash
