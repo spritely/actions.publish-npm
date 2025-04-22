@@ -11,12 +11,6 @@ runs:
         source ${{ github.workspace }}/tests/test-reporter.sh
         initialize_test "Publish npm workflow uses devcontainer and publishes packages" "workflow-test"
 
-    - name: Prepare test-reporter script for container
-      shell: bash
-      run: |
-        mkdir -p "${{ github.workspace }}/.ci-scripts"
-        cp "${{ github.workspace }}/tests/test-reporter.sh" ".ci-scripts/test-reporter.sh"
-
     - name: Prepare test environment
       shell: bash
       run: |
@@ -56,7 +50,7 @@ runs:
       shell: bash
       if: always()
       run: |
-        source /src/.ci-scripts/test-reporter.sh
+        source /src/tests/test-reporter.sh
         set_test_name "Assert custom devcontainer was used"
 
         log_file="${{ github.workspace }}/tests/workflow-test/logs/devcontainer.log"
