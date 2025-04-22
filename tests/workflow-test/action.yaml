@@ -73,7 +73,7 @@ runs:
       with:
         push: never
         runCmd: |
-          source /src/.ci-scripts/test-reporter.sh
+          source /src/tests/test-reporter.sh
           set_test_name "Assert npm package was published"
 
           version="1.0.0-${{ github.run_id }}-${{ github.run_attempt }}"
