@@ -79,7 +79,7 @@ runs:
 
           # Retry logic: wait up to 5 seconds for Verdaccio to register the new version
           for i in {1..5}; do
-            response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" "http://workflow-test-registry:4873/testproject/${version}.json")
+            response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" "http://workflow-test-registry:4873/testproject/${version}.tgz")
             if [ "$response" -eq 200 ]; then
               success "Npm package was published successfully"
               cat /tmp/npm_response.json
