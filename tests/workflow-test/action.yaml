@@ -79,6 +79,7 @@ runs:
           ls
 
           source test-reporter.sh
+          cd ..
           set_test_name "Assert npm package was published"
 
           version="1.0.0-${{ github.run_id }}-${{ github.run_attempt }}"
