@@ -72,14 +72,7 @@ runs:
       with:
         push: never
         runCmd: |
-          echo "*******HERE******"
-          pwd
-          ls
-          cd tests
-          ls
-
-          source test-reporter.sh
-          cd ..
+          source tests/test-reporter.sh
           set_test_name "Assert npm package was published"
 
           version="1.0.0-${{ github.run_id }}-${{ github.run_attempt }}"
