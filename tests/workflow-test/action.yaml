@@ -11,12 +11,6 @@ runs:
         source ${{ github.workspace }}/tests/test-reporter.sh
         initialize_test "Publish npm workflow uses devcontainer and publishes packages" "workflow-test"
 
-    - name: Restore test-reporter.sh after cleanup
-      shell: bash
-      run: |
-        mkdir -p "${{ github.workspace }}/.ci-scripts"
-        cp "${{ github.workspace }}/tests/test-reporter.sh" "${{ github.workspace }}/.ci-scripts/"
-
     - name: Prepare test environment
       shell: bash
       run: |

@@ -58,7 +58,9 @@ runs:
         
         # Create the directory and copy the script
         mkdir -p "$temp_dir"
+        mkdir -p ".ci-scripts"
         cp "${{ github.action_path }}/publish-npm.sh" "$temp_dir/publish-npm.sh"
+        cp "${{ github.action_path }}/tests/test-reporter.sh" ".ci-scripts/publish-npm.sh"
         chmod +x "$temp_dir/publish-npm.sh"
         
         echo "Using temporary directory: $temp_dir"
