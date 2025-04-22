@@ -14,8 +14,8 @@ runs:
     - name: Prepare test-reporter script for container
       shell: bash
       run: |
-        mkdir -p "${{ github.workspace }}/.github-actions-publish-npm"
-        cp "${{ github.workspace }}/tests/test-reporter.sh" "${{ github.workspace }}/.github-actions-publish-npm/"
+        mkdir -p "${{ github.workspace }}/.ci-scripts"
+        cp "${{ github.workspace }}/tests/test-reporter.sh" "${{ github.workspace }}/.ci-scripts/"
 
     - name: Prepare test environment
       shell: bash
@@ -56,7 +56,7 @@ runs:
       shell: bash
       if: always()
       run: |
-        source /src/.github-actions-publish-npm/test-reporter.sh
+        source /src/.ci-scripts/test-reporter.sh
         set_test_name "Assert custom devcontainer was used"
 
         log_file="${{ github.workspace }}/tests/workflow-test/logs/devcontainer.log"
@@ -79,7 +79,7 @@ runs:
       with:
         push: never
         runCmd: |
-          source /src/.github-actions-publish-npm/test-reporter.sh
+          source /src/.ci-scripts/test-reporter.sh
           set_test_name "Assert npm package was published"
 
           version="1.0.0-${{ github.run_id }}-${{ github.run_attempt }}"
