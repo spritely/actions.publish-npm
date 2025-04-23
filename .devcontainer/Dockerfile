@@ -12,7 +12,6 @@ RUN apt-get update && apt-get install -y \
     bats \
     git \
     openssh-client \
-    jq \
     wget && \
     # The version of yq available in apt is very outdated so it must be manually installed
     # To find newer versions visit: https://github.com/mikefarah/yq/releases/

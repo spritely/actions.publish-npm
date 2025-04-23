@@ -74,7 +74,7 @@ setup() {
         }
 
         local name
-        name=$(jq -r .name "$package_json")
+        name=$(sed -n 's/^[[:space:]]*"name"[[:space:]]*:[[:space:]]*"\([^"]\+\)".*/\1/p' "$package_json")
         if [ -z "$name" ] || [ "$name" = "null" ]; then
             echo "Failed to read package name from package.json"
             return 1
@@ -161,8 +161,8 @@ teardown() {
     local version="4.2.0"
 
     # Update the package name to use a scope
-    jq '.name = "@myscope/scopedpkg"' "$project_directory/package.json" > "$project_directory/tmp.json"
-    mv "$project_directory/tmp.json" "$project_directory/package.json"
+    sed -i.bak -E 's/^([[:space:]]*"name"[[:space:]]*:[[:space:]]*")[^"]*(")/\1@myscope\/scopedpkg\2/' "$project_directory/package.json"
+
 
     run_script "$project_directory" "$version"
     assert_package_created "$project_directory" "$version"

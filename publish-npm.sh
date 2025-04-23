@@ -18,13 +18,13 @@ echo "Updating version in ${PROJECT_DIRECTORY} to ${VERSION}"
 # Create a temp file inside the project directory
 tmpfile="$(mktemp "temp.json.XXXXXX")"
 
-# Update the version in package.json
-if jq -e .version "package.json" > /dev/null; then
-    # If version exists, update it
-    jq ".version = \"$VERSION\"" "package.json" > "$tmpfile" && mv "$tmpfile" "package.json"
+# Update the version in package.json using sed
+if grep -q '"version"' package.json; then
+    # Update existing "version" field
+    sed -i.bak -E "s/\"version\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/\"version\": \"${VERSION}\"/" package.json
 else
-    # If version doesn't exist, add it
-    jq ". + {\"version\": \"$VERSION\"}" "package.json" > "$tmpfile" && mv "$tmpfile" "package.json"
+    # Add version field after the first opening brace
+    sed -i.bak "0,/^{/s//{\n  \"version\": \"${VERSION}\",/" package.json
 fi
 
 
