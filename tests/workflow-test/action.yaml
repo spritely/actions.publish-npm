@@ -69,37 +69,37 @@ runs:
     - name: Assert npm package was published
       uses: devcontainers/ci@v0.3
       if: always()
-      push: never
       with:
-      runCmd: |
-        source tests/test-reporter.sh
-        set_test_name "Assert npm package was published"
+        push: never
+        runCmd: |
+          source tests/test-reporter.sh
+          set_test_name "Assert npm package was published"
 
-        version="1.0.0-${{ github.run_id }}-${{ github.run_attempt }}"
-        expected_name="testproject"
+          version="1.0.0-${{ github.run_id }}-${{ github.run_attempt }}"
+          expected_name="testproject"
 
-        for i in {1..5}; do
-          response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" \
-            "http://workflow-test-registry:4873/${expected_name}")
+          for i in {1..5}; do
+            response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" \
+              "http://workflow-test-registry:4873/${expected_name}")
 
-          if [ "$response" -eq 200 ]; then
-            if sed -n "/\"${version}\"[[:space:]]*:/,/^[[:space:]]*}/p" /tmp/npm_response.json \
-              | grep -q "\"name\"[[:space:]]*:[[:space:]]*\"${expected_name}\""; then
-              success "Package ${expected_name}@${version} was published successfully"
-              exit 0
+            if [ "$response" -eq 200 ]; then
+              if sed -n "/\"${version}\"[[:space:]]*:/,/^[[:space:]]*}/p" /tmp/npm_response.json \
+                | grep -q "\"name\"[[:space:]]*:[[:space:]]*\"${expected_name}\""; then
+                success "Package ${expected_name}@${version} was published successfully"
+                exit 0
+              fi
             fi
-          fi
 
-          sleep 1
-        done
+            sleep 1
+          done
 
-        failure "Package ${expected_name}@${version} was not found in registry (HTTP $response)"
-        echo "Full response from Verdaccio:"
-        cat /tmp/npm_response.json
-        echo "Search results on Verdaccio:"
-        curl -s "http://workflow-test-registry:4873/-/verdaccio/packages"
+          failure "Package ${expected_name}@${version} was not found in registry (HTTP $response)"
+          echo "Full response from Verdaccio:"
+          cat /tmp/npm_response.json
+          echo "Search results on Verdaccio:"
+          curl -s "http://workflow-test-registry:4873/-/verdaccio/packages"
 
-        exit 1
+          exit 1
 
     - name: Clean up test environment
       shell: bash
