@@ -69,8 +69,8 @@ runs:
     - name: Assert npm package was published
       uses: devcontainers/ci@v0.3
       if: always()
-      with:
       push: never
+      with:
       runCmd: |
         source tests/test-reporter.sh
         set_test_name "Assert npm package was published"
