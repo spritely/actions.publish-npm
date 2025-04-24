@@ -89,17 +89,19 @@ setup() {
 
 teardown() {
     rm -rf "${TEMP_DIR}"
+    # Removes the published packages to prepare for the next test run
     find /src/tests/verdaccio/storage -type f -name '*.tgz' -exec dirname {} \; | xargs rm -rf
 }
 
 @test "publish-npm fails when project package.json file doesn't exist" {
-    run_script "NonExistentFolder" "1.0.0" "true"
+    run_script "non-existent-folder" "1.0.0" "true"
     [ "$status" -ne 0 ]
     [[ "$output" == *"not found"* ]]
 }
 
 @test "publish-npm adds Version tag if none exists" {
     local project_directory
+    # create_project uses npm init to create the project, which by default does not have a version set in package.json
     project_directory=$(create_project)
 
     local version="1.2.3"
@@ -156,13 +158,12 @@ teardown() {
 
 @test "publish-npm handles scoped package names" {
     local project_directory
-    project_directory=$(create_project "scopedpkg")
-
     local version="4.2.0"
-
-    # Update the package name to use a scope
+    
+    project_directory=$(create_project "scopedpkg")
+    # This sed command updates the package name to be a scoped package
+    # This is a workaround for the fact that npm init does not support scoped package names directly when not running interactively
     sed -i.bak -E 's/^([[:space:]]*"name"[[:space:]]*:[[:space:]]*")[^"]*(")/\1@myscope\/scopedpkg\2/' "$project_directory/package.json"
-
 
     run_script "$project_directory" "$version"
     assert_package_created "$project_directory" "$version"

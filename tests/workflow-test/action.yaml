@@ -78,20 +78,14 @@ runs:
           version="1.0.0-${{ github.run_id }}-${{ github.run_attempt }}"
           expected_name="testproject"
 
-          for i in {1..5}; do
-            response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" \
-              "http://workflow-test-registry:4873/${expected_name}")
+          response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" "http://workflow-test-registry:4873/${expected_name}")
 
-            if [ "$response" -eq 200 ]; then
-              if sed -n "/\"${version}\"[[:space:]]*:/,/^[[:space:]]*}/p" /tmp/npm_response.json \
-                | grep -q "\"name\"[[:space:]]*:[[:space:]]*\"${expected_name}\""; then
-                success "Package ${expected_name}@${version} was published successfully"
-                exit 0
-              fi
+          if [ "$response" -eq 200 ]; then
+            if sed -n "/\"${version}\"[[:space:]]*:/,/^[[:space:]]*}/p" /tmp/npm_response.json | grep -q "\"name\"[[:space:]]*:[[:space:]]*\"${expected_name}\""; then
+              success "Package ${expected_name}@${version} was published successfully"
+              exit 0
             fi
-
-            sleep 1
-          done
+          fi
 
           failure "Package ${expected_name}@${version} was not found in registry (HTTP $response)"
           echo "Full response from Verdaccio:"
