@@ -15,9 +15,6 @@ cd "$PROJECT_DIRECTORY" || {
 
 echo "Updating version in ${PROJECT_DIRECTORY} to ${VERSION}"
 
-# Create a temp file inside the project directory
-tmpfile="$(mktemp "temp.json.XXXXXX")"
-
 # Update the version in package.json using sed
 if grep -q '"version"' package.json; then
     # Update existing "version" field
@@ -26,7 +23,6 @@ else
     # Add version field after the first opening brace
     sed -i.bak "0,/^{/s//{\n  \"version\": \"${VERSION}\",/" package.json
 fi
-
 
 # Remove http(s):// prefix from registry name for assigning npm credentials config
 PACKAGE_REGISTRY_HOST=$(echo "$PACKAGE_REGISTRY" | sed -E 's|^https?://||' | sed -E 's|/.*$||')

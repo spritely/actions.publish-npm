@@ -26,12 +26,14 @@ jobs:
 
       - uses: spritely/actions.publish-npm@v0.1.0
         with:
-          authToken: ${{ github.token }}
+          packageRegistryUsername: registryuser
+          packageRegistryPassword: registrypass
           projectDirectory: Projects/MyProject
           version: 1.0.0
           # This is the default, but you can publish to other private registries
-          # Just make sure to provide the correct authToken
+          # Just make sure to provide the correct auth information.
           # packageRepository: https://npm.pkg.github.com/your-org/index.json
+          # For npm.pkg.github, your username is {github.actor} and your PAT is used as the password.
 ```
 
 ### Building with devcontainer from private GitHub container registry
@@ -78,11 +80,11 @@ jobs:
 
 ### 1. Unit tests (`publish-npm.bats`)
 
-Validate core script logic locally in isolation using a local filesystem based npm registry.
+Validate core script logic locally in isolation using a verdaccio container-based npm registry.
 
 ### 2. Workflow tests (`workflow-test/`)
 
-Verify full GitHub Action behavior using test container registries and NPM registry. Runs only in GitHub Action pipeline for testing overall workflow.
+Verify full GitHub Action behavior using test container registry and NPM registry. Runs only in GitHub Action pipeline for testing overall workflow.
 
 ## DevContainer Decision
 
