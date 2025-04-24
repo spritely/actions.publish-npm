@@ -1,0 +1,28 @@
+networks:
+  actions-publish-npm-dev-network:
+    driver: bridge
+
+services:
+  actions-publish-npm-dev:
+    container_name: actions-publish-npm-dev
+    build:
+      dockerfile: Dockerfile
+    command: /bin/sh -c "sleep infinity"
+    volumes:
+      - ../:/src
+      - ${HOME:-$USERPROFILE}/.ssh:/root/.ssh:ro
+    env_file:
+      - .env
+    networks:
+      - actions-publish-npm-dev-network
+
+  actions-publish-npm-registry:
+    container_name: actions-publish-npm-registry
+    image: verdaccio/verdaccio:6.1.2
+    ports:
+      - "4873:4873"
+    volumes:
+      - ../tests/verdaccio/storage:/verdaccio/storage
+    user: root
+    networks:
+      - actions-publish-npm-dev-network

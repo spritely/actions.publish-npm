@@ -1,0 +1,7 @@
+{
+    "name": "Test Node Container",
+    "dockerComposeFile": "docker-compose.yaml",
+    "service": "workflow-test-dev",
+    "workspaceFolder": "/src",
+    "features": {}
+}

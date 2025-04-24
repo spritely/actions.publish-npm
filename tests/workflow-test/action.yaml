@@ -1,0 +1,113 @@
+name: Publish npm workflow uses devcontainer and publishes packages
+
+description: Test to validate that publish npm workflow uses devcontainer and publishes packages
+
+runs:
+  using: composite
+  steps:
+    - name: Initialize test
+      shell: bash
+      run: |
+        source ${{ github.workspace }}/tests/test-reporter.sh
+        initialize_test "Publish npm workflow uses devcontainer and publishes packages" "workflow-test"
+
+    - name: Prepare test environment
+      shell: bash
+      run: |
+        # Set up test environment with required directories
+        mkdir -p "${{ github.workspace }}/tests/workflow-test/logs"
+
+        # Back up existing .devcontainer
+        if [ -d "${{ github.workspace }}/.devcontainer" ]; then
+          mv "${{ github.workspace }}/.devcontainer" "${{ github.workspace }}/.devcontainer.bak"
+        fi
+
+        # Copy our test .devcontainer to the root
+        cp -r "${{ github.workspace }}/tests/workflow-test/.devcontainer" "${{ github.workspace }}/"
+
+        # Create and push test container image
+        docker build -t localhost:5000/workflow-test-devcontainer:latest \
+            -f ${{ github.workspace }}/tests/workflow-test/devcontainer-to-publish/Dockerfile \
+            ${{ github.workspace }}/tests/workflow-test/devcontainer-to-publish/
+
+        docker login localhost:5000 -u testuser -p testpassword
+        docker push localhost:5000/workflow-test-devcontainer:latest
+
+    - name: Run publish-npm action
+      uses: ./
+      with:
+        registryHost: localhost:5000
+        registryUsername: testuser
+        registryPassword: testpassword
+        projectDirectory: tests/workflow-test/testproject
+        version: 1.0.0-${{ github.run_id }}-${{ github.run_attempt }}
+        packageRegistry: http://workflow-test-registry:4873
+        packageRegistryUsername: testuser
+        packageRegistryPassword: testpassword
+
+    - name: Assert custom devcontainer was used
+      shell: bash
+      if: always()
+      run: |
+        source ${{ github.workspace }}/tests/test-reporter.sh
+        set_test_name "Assert custom devcontainer was used"
+
+        log_file="${{ github.workspace }}/tests/workflow-test/logs/devcontainer.log"
+
+        if [ -f "$log_file" ]; then
+            if grep -q "CUSTOM_DEVCONTAINER: workflow-test-container" "$log_file"; then
+                success "Custom devcontainer was used"
+            else
+                failure "Custom devcontainer marker not found in logs"
+            fi
+            cat "$log_file"
+        else
+            failure "Devcontainer log file not found"
+            ls -la "${{ github.workspace }}/tests/workflow-test/logs/"
+        fi
+
+    - name: Assert npm package was published
+      uses: devcontainers/ci@v0.3
+      if: always()
+      with:
+        push: never
+        runCmd: |
+          source tests/test-reporter.sh
+          set_test_name "Assert npm package was published"
+
+          version="1.0.0-${{ github.run_id }}-${{ github.run_attempt }}"
+          expected_name="testproject"
+
+          response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" "http://workflow-test-registry:4873/${expected_name}")
+
+          if [ "$response" -eq 200 ]; then
+            if sed -n "/\"${version}\"[[:space:]]*:/,/^[[:space:]]*}/p" /tmp/npm_response.json | grep -q "\"name\"[[:space:]]*:[[:space:]]*\"${expected_name}\""; then
+              success "Package ${expected_name}@${version} was published successfully"
+              exit 0
+            fi
+          fi
+
+          failure "Package ${expected_name}@${version} was not found in registry (HTTP $response)"
+          echo "Full response from Verdaccio:"
+          cat /tmp/npm_response.json
+          echo "Search results on Verdaccio:"
+          curl -s "http://workflow-test-registry:4873/-/verdaccio/packages"
+
+          exit 1
+
+    - name: Clean up test environment
+      shell: bash
+      if: always()
+      run: |
+        # Restore original .devcontainer
+        rm -rf "${{ github.workspace }}/.devcontainer"
+        if [ -d "${{ github.workspace }}/.devcontainer.bak" ]; then
+          mv "${{ github.workspace }}/.devcontainer.bak" "${{ github.workspace }}/.devcontainer"
+        fi
+
+    - name: Finalize test
+      shell: bash
+      if: always()
+      run: |
+        source ${{ github.workspace }}/tests/test-reporter.sh
+        finalize_test

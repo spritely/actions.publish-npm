@@ -1,0 +1,22 @@
+services:
+  workflow-test-dev:
+    container_name: workflow-test-dev
+    image: localhost:5000/workflow-test-devcontainer:latest
+    command: /bin/sh -c "sleep infinity"
+    volumes:
+      - ../:/src
+      - ../tests/workflow-test/logs:/logs
+    env_file:
+      - .env
+    networks:
+      - workflow-test-network
+  workflow-test-registry:
+    container_name: workflow-test-registry
+    image: verdaccio/verdaccio:6.1.2
+    volumes:
+      - ../tests/verdaccio/storage:/verdaccio/storage
+    user: root
+    networks:
+      - workflow-test-network
+networks:
+  workflow-test-network:
