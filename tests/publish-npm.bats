@@ -4,7 +4,8 @@ setup() {
     export TEMP_DIR="$(mktemp -d)"
     export SCRIPT_PATH="${BATS_TEST_DIRNAME}/../publish-npm.sh"
     export PACKAGE_REGISTRY="http://actions-publish-npm-registry:4873"
-    export PACKAGE_REGISTRY_TOKEN="$(echo -n "testuser:testpassword" | base64)"
+    export PACKAGE_REGISTRY_TOKEN="verdaccio-token"
+    #"$(echo -n "testuser:testpassword" | base64)"
 
     cd "$TEMP_DIR"
 

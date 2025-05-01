@@ -15,7 +15,7 @@ inputs:
   packageRegistry:
     description: The URL of the npm package registry to push to.
     required: false
-    default: https://npm.pkg.github.com/${{ github.repository_owner }}/index.json
+    default: https://npm.pkg.github.com/${{ github.repository_owner }}
   registryHost:
     description: The host of the container registry to pull devcontainers from. If not provided, no login will be performed.
     required: false

@@ -15,6 +15,7 @@ services:
     image: verdaccio/verdaccio:6.1.2
     volumes:
       - ../tests/verdaccio/storage:/verdaccio/storage
+      - ../tests/auth/config.yaml:/verdaccio/conf/config.yaml
     user: root
     networks:
       - workflow-test-network

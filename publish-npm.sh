@@ -29,7 +29,8 @@ PACKAGE_REGISTRY_HOST=$(echo "$PACKAGE_REGISTRY" | sed -E 's|^https?://||' | sed
 
 # Configure npm registry and credentials for publishing
 npm set registry "$PACKAGE_REGISTRY"
-npm config set "//$PACKAGE_REGISTRY_HOST/:_auth" "$PACKAGE_REGISTRY_TOKEN"
+echo "//${PACKAGE_REGISTRY_HOST}/:_authToken=${PACKAGE_REGISTRY_TOKEN}" >> ~/.npmrc
+#"$(npm config get userconfig)"
 
 # Create the npm package tarball
 echo "Creating npm package..."
