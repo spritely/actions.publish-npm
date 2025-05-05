@@ -1,0 +1,5 @@
+{
+    "name":"verdaccio-token-to-user",
+    "version":"0.0.1",
+    "main":"index.js"
+}

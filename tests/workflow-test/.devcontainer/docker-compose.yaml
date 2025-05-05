@@ -1,5 +1,9 @@
+networks:
+  workflow-test-network:
+    driver: bridge
+
 services:
-  workflow-test-dev:
+ workflow-test-dev:
     container_name: workflow-test-dev
     image: localhost:5000/workflow-test-devcontainer:latest
     command: /bin/sh -c "sleep infinity"
@@ -10,14 +14,15 @@ services:
       - .env
     networks:
       - workflow-test-network
+
   workflow-test-registry:
     container_name: workflow-test-registry
     image: verdaccio/verdaccio:6.1.2
-    volumes:
-      - ../tests/verdaccio/storage:/verdaccio/storage
-      - ../tests/auth/config.yaml:/verdaccio/conf/config.yaml
     user: root
+    ports:
+      - "4873:4873"
+    volumes:
+      - ../tests/verdaccio:/verdaccio
     networks:
       - workflow-test-network
-networks:
-  workflow-test-network:
+

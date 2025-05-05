@@ -18,14 +18,11 @@ services:
 
   actions-publish-npm-registry:
     container_name: actions-publish-npm-registry
-    build:
-      context: .
-      dockerfile: Dockerfile.verdaccio
-#    image: verdaccio/verdaccio:6.1.2
+    image: verdaccio/verdaccio:6.1.2
+    user: root
     ports:
       - "4873:4873"
     volumes:
-      - ../tests/verdaccio/storage:/verdaccio/storage
-      - ../tests/auth/config.yaml:/verdaccio/conf/config.yaml
+      - ../tests/verdaccio:/verdaccio
     networks:
       - actions-publish-npm-dev-network
