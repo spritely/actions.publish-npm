@@ -17,6 +17,16 @@ jobs:
           cat > ./.devcontainer/.env <<EOF
           EOF
 
+      - name: Run tests - publish-npm
+        uses: devcontainers/ci@v0.3
+        if: always()
+        with:
+          runCmd: |
+            mkdir -p ./test-results/
+            bats --version
+            bats --print-output-on-failure --report-formatter junit --output ./test-results/ ./tests/
+          push: never
+
       - id: setup-tests
         name: Setup test container registry
         run: |
@@ -31,16 +41,6 @@ jobs:
         uses: ./tests/workflow-test
         if: always() && steps.setup-tests.outcome == 'success'
 
-      - name: Run tests - publish-npm
-        uses: devcontainers/ci@v0.3
-        if: always()
-        with:
-          runCmd: |
-            mkdir -p ./test-results/
-            bats --version
-            bats --print-output-on-failure --report-formatter junit --output ./test-results/ ./tests/
-          push: never
-          
       - name: Add test report title
         if: always()
         run: |
