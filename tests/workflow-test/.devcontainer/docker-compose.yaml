@@ -22,7 +22,9 @@ services:
     ports:
       - "4873:4873"
     volumes:
-      - ../tests/verdaccio:/verdaccio
+      - ../tests/verdaccio/conf:/verdaccio/conf
+      - ../tests/verdaccio/plugins:/verdaccio/plugins
+      - ../tests/verdaccio/storage:/verdaccio/storage
     networks:
       - workflow-test-network
 
