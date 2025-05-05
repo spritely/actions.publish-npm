@@ -104,9 +104,6 @@ runs:
           mv "${{ github.workspace }}/.devcontainer.bak" "${{ github.workspace }}/.devcontainer"
         fi
 
-        # Clean up published packages
-        find ${{ github.workspace }}/tests/verdaccio/storage -type f -name '*.tgz' -exec dirname {} \; | xargs rm -rf
-
     - name: Finalize test
       shell: bash
       if: always()
