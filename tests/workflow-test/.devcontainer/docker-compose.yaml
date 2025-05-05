@@ -3,7 +3,7 @@ networks:
     driver: bridge
 
 services:
- workflow-test-dev:
+  workflow-test-dev:
     container_name: workflow-test-dev
     image: localhost:5000/workflow-test-devcontainer:latest
     command: /bin/sh -c "sleep infinity"
