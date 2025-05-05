@@ -41,7 +41,7 @@ runs:
         registryPassword: testpassword
         projectDirectory: tests/workflow-test/testproject
         version: 1.0.0-${{ github.run_id }}-${{ github.run_attempt }}
-        packageRegistry: http://workflow-test-registry:4873
+        packageRegistry: http://workflow-test-registry:4874
         packageRegistryToken: verdaccio-token
 
     - name: Assert custom devcontainer was used
@@ -77,7 +77,7 @@ runs:
           version="1.0.0-${{ github.run_id }}-${{ github.run_attempt }}"
           expected_name="testproject"
 
-          response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" "http://workflow-test-registry:4873/${expected_name}")
+          response=$(curl -s -o /tmp/npm_response.json -w "%{http_code}" "http://workflow-test-registry:4874/${expected_name}")
 
           if [ "$response" -eq 200 ]; then
             if sed -n "/\"${version}\"[[:space:]]*:/,/^[[:space:]]*}/p" /tmp/npm_response.json | grep -q "\"name\"[[:space:]]*:[[:space:]]*\"${expected_name}\""; then
@@ -90,7 +90,7 @@ runs:
           echo "Full response from Verdaccio:"
           cat /tmp/npm_response.json
           echo "Search results on Verdaccio:"
-          curl -s "http://workflow-test-registry:4873/-/verdaccio/packages"
+          curl -s "http://workflow-test-registry:4874/-/verdaccio/packages"
 
           exit 1
 

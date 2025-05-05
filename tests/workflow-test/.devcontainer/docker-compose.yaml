@@ -20,7 +20,7 @@ services:
     image: verdaccio/verdaccio:6.1.2
     user: root
     ports:
-      - "4873:4873"
+      - "4874:4873"
     volumes:
       - ../tests/verdaccio/conf:/verdaccio/conf
       - ../tests/verdaccio/plugins:/verdaccio/plugins
