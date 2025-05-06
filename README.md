@@ -32,7 +32,7 @@ jobs:
           # This is the default, but you can publish to other private registries
           # Just make sure to provide the correct auth information.
           # packageRepository: https://npm.pkg.github.com/your-org/index.json
-          # For npm.pkg.github, your PAT or github.token is used as the password.
+          # For npm.pkg.github, your personal access token (PAT) or github.token is used as the password.
 ```
 
 ### Building with devcontainer from private GitHub container registry
