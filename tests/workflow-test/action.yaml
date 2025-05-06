@@ -42,8 +42,7 @@ runs:
         projectDirectory: tests/workflow-test/testproject
         version: 1.0.0-${{ github.run_id }}-${{ github.run_attempt }}
         packageRegistry: http://workflow-test-registry:4873
-        packageRegistryUsername: testuser
-        packageRegistryPassword: testpassword
+        packageRegistryToken: verdaccio-token
 
     - name: Assert custom devcontainer was used
       shell: bash

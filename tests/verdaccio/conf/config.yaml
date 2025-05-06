@@ -1,0 +1,28 @@
+storage: /verdaccio/storage
+plugins: /verdaccio/plugins
+
+auth:
+  htpasswd:
+    file: /verdaccio/conf/htpasswd
+
+middlewares:
+  token-to-user:
+    # When npm uses _authToken it will match this token
+    token: verdaccio-token
+    # Then the following credentials will be passed to the auth middleware
+    # So the values need to match what is in htpasswd
+    username: testuser
+    password: testpassword
+
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+
+packages:
+  '**':
+    access: $all
+    publish: $authenticated
+    proxy: npmjs
+
+log:
+  level: info

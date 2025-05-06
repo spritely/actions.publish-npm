@@ -2,14 +2,10 @@ name: Build and publish npm package through the repos devcontainer
 description: Builds and publishes a npm package to the package registry.
 
 inputs:
-  packageRegistryUsername:
-    description: Authentication username for the npm registry.
+  packageRegistryToken:
+    description: Authentication token for the npm registry.
     required: true
-    default: ''
-  packageRegistryPassword:
-    description: Authentication password for the npm registry.
-    required: true
-    default: ''
+    default: ${{ github.token }}
   projectDirectory:
     description: The path to the directory containing the package.json file to build from. Include the relative path from the root of the repository if necessary.
     required: true
@@ -19,7 +15,7 @@ inputs:
   packageRegistry:
     description: The URL of the npm package registry to push to.
     required: false
-    default: https://npm.pkg.github.com/${{ github.repository_owner }}/index.json
+    default: https://npm.pkg.github.com/${{ github.repository_owner }}
   registryHost:
     description: The host of the container registry to pull devcontainers from. If not provided, no login will be performed.
     required: false
@@ -45,24 +41,24 @@ runs:
 
         # Need to copy the build script files to a path that will work inside the devcontainer
         # Trying to use a path name that is very unlikely to create a conflict in any user repos
-        
+
         base_dir=".github-actions-publish-npm"
         temp_dir="$base_dir"
         counter=1
-        
+
         # Find a unique directory name
         while [ -e "$temp_dir" ]; do
           temp_dir="${base_dir}-${counter}"
           counter=$((counter + 1))
         done
-        
+
         # Create the directory and copy the script
         mkdir -p "$temp_dir"
         cp "${{ github.action_path }}/publish-npm.sh" "$temp_dir/publish-npm.sh"
         chmod +x "$temp_dir/publish-npm.sh"
-        
+
         echo "Using temporary directory: $temp_dir"
-        
+
         # Set output variables
         echo "publishNPMDirectory=$temp_dir" >> $GITHUB_OUTPUT
 
@@ -77,8 +73,7 @@ runs:
           PROJECT_DIRECTORY=${{ inputs.projectDirectory }}
           VERSION=${{ inputs.version }}
           PACKAGE_REGISTRY=${{ inputs.packageRegistry }}
-          PACKAGE_REGISTRY_USERNAME=${{ inputs.packageRegistryUsername }}
-          PACKAGE_REGISTRY_PASSWORD=${{ inputs.packageRegistryPassword }}
+          PACKAGE_REGISTRY_TOKEN=${{ inputs.packageRegistryToken }}
 
     - name: Remove temporary files
       if: always()

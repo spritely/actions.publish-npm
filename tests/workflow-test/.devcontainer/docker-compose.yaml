@@ -1,3 +1,7 @@
+networks:
+  workflow-test-network:
+    driver: bridge
+
 services:
   workflow-test-dev:
     container_name: workflow-test-dev
@@ -10,13 +14,17 @@ services:
       - .env
     networks:
       - workflow-test-network
+
   workflow-test-registry:
     container_name: workflow-test-registry
     image: verdaccio/verdaccio:6.1.2
-    volumes:
-      - ../tests/verdaccio/storage:/verdaccio/storage
     user: root
+    ports:
+      - "4874:4873"
+    volumes:
+      - ../tests/verdaccio/conf:/verdaccio/conf
+      - ../tests/verdaccio/plugins:/verdaccio/plugins
+      - ../tests/verdaccio/storage:/verdaccio/storage
     networks:
       - workflow-test-network
-networks:
-  workflow-test-network:
+

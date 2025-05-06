@@ -4,8 +4,7 @@ setup() {
     export TEMP_DIR="$(mktemp -d)"
     export SCRIPT_PATH="${BATS_TEST_DIRNAME}/../publish-npm.sh"
     export PACKAGE_REGISTRY="http://actions-publish-npm-registry:4873"
-    export PACKAGE_REGISTRY_USERNAME="testuser"
-    export PACKAGE_REGISTRY_PASSWORD="testpassword"
+    export PACKAGE_REGISTRY_TOKEN="verdaccio-token"
 
     cd "$TEMP_DIR"
 
@@ -159,7 +158,7 @@ teardown() {
 @test "publish-npm handles scoped package names" {
     local project_directory
     local version="4.2.0"
-    
+
     project_directory=$(create_project "scopedpkg")
     # This sed command updates the package name to be a scoped package
     # This is a workaround for the fact that npm init does not support scoped package names directly when not running interactively

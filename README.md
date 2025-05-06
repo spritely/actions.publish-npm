@@ -26,14 +26,13 @@ jobs:
 
       - uses: spritely/actions.publish-npm@v0.1.0
         with:
-          packageRegistryUsername: registryuser
-          packageRegistryPassword: registrypass
+          packageRegistryToken: myToken
           projectDirectory: Projects/MyProject
           version: 1.0.0
           # This is the default, but you can publish to other private registries
           # Just make sure to provide the correct auth information.
           # packageRepository: https://npm.pkg.github.com/your-org/index.json
-          # For npm.pkg.github, your username is {github.actor} and your PAT is used as the password.
+          # For npm.pkg.github, your personal access token (PAT) or github.token is used as the password.
 ```
 
 ### Building with devcontainer from private GitHub container registry
@@ -53,8 +52,7 @@ jobs:
 
       - uses: spritely/actions.publish-npm@v1
         with:
-          packageRegistryUsername: registryuser
-          packageRegistryPassword: registrypass
+          packageRegistryToken: myToken
           projectDirectory: Projects/MyProject
           version: 2.1.0-rc.1
           # Read devcontainers from here
@@ -67,8 +65,7 @@ jobs:
 
 | Parameter | Description | Required | Default |
 |-----------|-------------|----------|---------|
-| `packageRegistryUsername` | Package registry auth username | Yes | - |
-| `packageRegistryPassword` | Package registry auth password | Yes | - |
+| `packageRegistryToken` | Package registry auth token | Yes | github.token |
 | `projectDirectory` | Path to directory containing your package.json file (relative to root) | Yes | - |
 | `version` | Full SemVer 2.0 version string | Yes | - |
 | `packageRegistry` | NPM Registry URL | No | GitHub Packages URL |

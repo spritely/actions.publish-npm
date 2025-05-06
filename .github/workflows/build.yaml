@@ -40,7 +40,7 @@ jobs:
             bats --version
             bats --print-output-on-failure --report-formatter junit --output ./test-results/ ./tests/
           push: never
-          
+
       - name: Add test report title
         if: always()
         run: |

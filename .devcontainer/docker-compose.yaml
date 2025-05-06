@@ -19,10 +19,12 @@ services:
   actions-publish-npm-registry:
     container_name: actions-publish-npm-registry
     image: verdaccio/verdaccio:6.1.2
+    user: root
     ports:
       - "4873:4873"
     volumes:
+      - ../tests/verdaccio/conf:/verdaccio/conf
+      - ../tests/verdaccio/plugins:/verdaccio/plugins
       - ../tests/verdaccio/storage:/verdaccio/storage
-    user: root
     networks:
       - actions-publish-npm-dev-network
