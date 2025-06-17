@@ -6,7 +6,7 @@ updates:
     schedule:
       interval: daily
     ignore:
-      - dependency-name: "docker.io/library/node"
+      - dependency-name: "library/node"
         update-types: ["version-update:semver-major"]
     groups:
       all-actions:
