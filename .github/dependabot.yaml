@@ -9,7 +9,7 @@ updates:
       - dependency-name: library/node
         update-types: ["version-update:semver-major"]
     groups:
-      all-actions:
+      all-docker:
         patterns:
           - "*"
   - package-ecosystem: docker-compose
@@ -20,7 +20,7 @@ updates:
     ignore:
       - dependency-name: localhost
     groups:
-      all-actions:
+      all-docker-compose:
         patterns:
           - "*"
   - package-ecosystem: github-actions
@@ -30,6 +30,6 @@ updates:
     schedule:
       interval: daily
     groups:
-      all-actions:
+      all-github-actions:
         patterns:
           - "*"
