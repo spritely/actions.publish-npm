@@ -17,7 +17,7 @@ services:
 
   workflow-test-registry:
     container_name: workflow-test-registry
-    image: verdaccio/verdaccio:6.1.6
+    image: verdaccio/verdaccio:6.2.0
     user: root
     ports:
       - "4874:4873"
