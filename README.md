@@ -22,9 +22,9 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: spritely/actions.publish-npm@v0.1.0
+      - uses: spritely/actions.publish-npm@v0.3.0
         with:
           packageRegistryToken: myToken
           projectDirectory: Projects/MyProject
@@ -48,9 +48,9 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: spritely/actions.publish-npm@v1
+      - uses: spritely/actions.publish-npm@v0.3.0
         with:
           packageRegistryToken: myToken
           projectDirectory: Projects/MyProject
