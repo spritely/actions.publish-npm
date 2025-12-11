@@ -9,7 +9,7 @@ jobs:
     steps:
       - id: version
         name: Get semantic version
-        uses: spritely/actions.semantic-version/get@v0.5.2
+        uses: spritely/actions.semantic-version/get@v0.5.5
 
       - name: Create .env for build
         shell: bash
@@ -47,7 +47,7 @@ jobs:
           echo "# Test Results" >> $GITHUB_STEP_SUMMARY
 
       - name: Generate test report
-        uses: dorny/test-reporter@v2.1.1
+        uses: dorny/test-reporter@v2.3.0
         if: always()
         with:
           name: Test Results
@@ -56,6 +56,6 @@ jobs:
 
       - name: Apply semantic version
         if: ${{ steps.version.outputs.branchName == github.event.repository.default_branch }}
-        uses: spritely/actions.semantic-version/apply@v0.5.2
+        uses: spritely/actions.semantic-version/apply@v0.5.5
         with:
           version: ${{ steps.version.outputs.version }}
