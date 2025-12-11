@@ -38,4 +38,12 @@ npm pack
 
 # Publish to the npm registry (local or public)
 echo "Publishing npm package to registry..."
-npm publish --registry "$PACKAGE_REGISTRY"
+
+# Extract prerelease tag from semantic version (e.g., "beta" from "1.0.0-beta.1+build.123")
+if [[ "$VERSION" =~ -([a-zA-Z]+) ]]; then
+    TAG="${BASH_REMATCH[1]}"
+    echo "Detected prerelease version, publishing with --tag $TAG"
+    npm publish --registry "$PACKAGE_REGISTRY" --tag "$TAG"
+else
+    npm publish --registry "$PACKAGE_REGISTRY"
+fi

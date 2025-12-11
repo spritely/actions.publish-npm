@@ -79,7 +79,7 @@ setup() {
             return 1
         fi
 
-        npm view "$name" version --registry "$PACKAGE_REGISTRY" | grep -q "$published_version" || {
+        npm view "$name" versions --registry "$PACKAGE_REGISTRY" --json | grep -q "\"$published_version\"" || {
             echo "Version ${published_version} of ${name} not found in registry"
             return 1
         }
