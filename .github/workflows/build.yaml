@@ -47,7 +47,7 @@ jobs:
           echo "# Test Results" >> $GITHUB_STEP_SUMMARY
 
       - name: Generate test report
-        uses: dorny/test-reporter@v2.3.0
+        uses: dorny/test-reporter@v2.4.0
         if: always()
         with:
           name: Test Results
