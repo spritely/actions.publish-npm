@@ -5,7 +5,7 @@
 # To find an image tag from #1:
 # - Choose latest long-term-support (LTS) version of Debian from #2
 # - Select the latest node version from #3 that exists in #1
-FROM docker.io/library/node:24.12.0-bookworm
+FROM docker.io/library/node:24.13.0-bookworm
 
 RUN apt-get update && apt-get install -y \
     bats \
