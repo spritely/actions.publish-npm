@@ -39,9 +39,15 @@ npm pack
 # Publish to the npm registry (local or public)
 echo "Publishing npm package to registry..."
 
-# Extract prerelease tag from semantic version (e.g., "beta" from "1.0.0-beta.1+build.123")
-if [[ "$VERSION" =~ -([a-zA-Z]+) ]]; then
-    TAG="${BASH_REMATCH[1]}"
+
+# If the version contains a hyphen, treat as prerelease and require a tag
+if [[ "$VERSION" == *-* ]]; then
+    # Extract tag (first part after hyphen, up to dot or end)
+    TAG=$(echo "$VERSION" | sed -E 's/^[0-9]+\.[0-9]+\.[0-9]+-([^.]+).*/\1/')
+    # Fallback to 'next' if tag is empty
+    if [ -z "$TAG" ]; then
+        TAG="next"
+    fi
     echo "Detected prerelease version, publishing with --tag $TAG"
     npm publish --registry "$PACKAGE_REGISTRY" --tag "$TAG"
 else
